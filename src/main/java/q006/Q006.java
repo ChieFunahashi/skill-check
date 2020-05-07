@@ -1,11 +1,19 @@
 package q006;
 
 import q006.value.DecimalValue;
+import q006.value.DivisionValue;
 import q006.value.IValue;
+import q006.value.MinusValue;
+import q006.value.MultiplicationValue;
 import q006.value.PlusValue;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Q006 空気を読んで改修
@@ -29,6 +37,31 @@ import java.util.List;
  * （または -1.00 など、小数点に0がついてもよい）
  */
 public class Q006 {
+
+    public static void main(String[] args) {
+        InputStreamReader isr = new InputStreamReader(System.in);
+        BufferedReader br = new BufferedReader(isr);
+
+        System.out.println("入力) ");
+
+        String text = null;
+        try {
+            text = br.readLine();
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<IValue> iValueList = parseLine(text);
+
+        Stack<BigDecimal> que = new Stack<BigDecimal>();
+
+        for (IValue iValue : iValueList) {
+            iValue.execute(que);
+        }
+
+        System.out.println("出力) " + que.pop());
+    }
+
     /**
      * 逆ポーランドで記載された1行のテキストを分解する
      * @param lineText 1行テキスト
@@ -38,10 +71,18 @@ public class Q006 {
         List<IValue> resultList = new ArrayList<>();
         // 空白文字で区切ってループする
         for (String text: lineText.split("[\\s]+")) {
-            // TODO 一部処理だけ実装
             switch (text) {
                 case "+":   // 足し算
                     resultList.add(new PlusValue());
+                    break;
+                case "-":   // 引き算
+                    resultList.add(new MinusValue());
+                    break;
+                case "*":   // 掛け算
+                    resultList.add(new MultiplicationValue());
+                    break;
+                case "/":   // 割り算
+                    resultList.add(new DivisionValue());
                     break;
                 default:    // その他は数値として扱う
                     resultList.add(new DecimalValue(text));
@@ -51,4 +92,4 @@ public class Q006 {
         return resultList;
     }
 }
-// 完成までの時間: xx時間 xx分
+// 完成までの時間: 2時間
